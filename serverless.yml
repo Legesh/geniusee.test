@@ -1,0 +1,34 @@
+service: search-dog-inside-image
+
+provider:
+    name: aws
+    region: us-east-1
+    runtime: provided
+    environment:
+        AVS_KEY: 'AKIAIZ22WRZ5HUCA2I2A'
+        AWS_SECRET: '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'
+
+plugins:
+    - ./vendor/bref/bref
+
+functions:
+    searchDog:
+        handler: searchDog.php
+        description: 'Function for searching the dog inside image'
+        layers:
+            - ${bref:layer.php-73}
+    sendEmail:
+        handler: sendEmail.php
+        description: 'Send email if dog not found'
+        layers:
+            - ${bref:layer.php-73}
+    saveToDB:
+        handler: saveImageLabels.php
+        description: 'If dog was found - save info to DB'
+        layers:
+            - ${bref:layer.php-73}
+
+# Exclude files from deployment
+package:
+    exclude:
+        - 'tests/**'
